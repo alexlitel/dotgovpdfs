@@ -11,6 +11,7 @@ const app = () => {
     feed.on('response', function(res) {
         var stream = this;
         if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));
+        console.log('Feed received. Application now starting.')
         stream.pipe(feedparser);
     });
 
@@ -25,6 +26,7 @@ const app = () => {
     });
 
    feedparser.on('end', function() {
+        console.log('Feed completely parsed, now beginning DB processing');
         dbCheck(arr);
     });
 };
