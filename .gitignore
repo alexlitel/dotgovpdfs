@@ -1,0 +1,4 @@
+node_modules
+.env
+app/checktitle.js
+/test
