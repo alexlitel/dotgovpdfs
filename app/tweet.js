@@ -2,6 +2,7 @@
  const mongoose = require('mongoose');
  const Twit = require('twit');
  const Tweet = require('./schema');
+ const request = require('request');
  const async = require('async');
  const EventEmitter = require('events');
 
@@ -15,10 +16,49 @@
      });
      let evt = new EventEmitter();
 
-     evt.on('end', function() {
+     evt.on('end', function(data) {
          console.log('End of loop, db is now closing');
          db.connection.close();
      });
+
+
+
+     function parseFile(item, cb) {
+         function cutOffDate(str) {
+             return new Date(str) > new Date(new Date().setMonth(new Date().getMonth() - 6));
+
+         }
+
+         const req = request.head(item.url.actual);
+         req.on('error', function(err) {
+             console.log('Error accessing document');
+             req.abort();
+             checkDb(item);
+         })
+         req.on('response', function(res) {
+             if (res.statusCode !== 200) {
+                 console.log('Document unavailable');
+                 req.abort();
+                 checkDb(item);
+             }
+             if (res.headers.hasOwnProperty('last-modified')) {
+                 let validDate = cutOffDate(res.headers['last-modified']);
+                 req.abort();
+                 if (validDate) {
+                     console.log('Document within date range');
+                     checkDb(item);
+                 } else {
+                     console.log('Document out of date range');
+                     return false;
+                 }
+             } else {
+                 console.log('Document doesn\'t have modified header');
+                 checkDb(item);
+                 req.abort();
+             }
+         });
+
+     };
 
      function tweetItem(item) {
          t.post('statuses/update', { status: item.tweet.text }, function(err, data, response) {
@@ -59,15 +99,17 @@
          setTimeout(function() {
              let num = array.indexOf(item);
              console.log(`item: ${num}`);
-             checkDb(item);
+
+             parseFile(item);
              cb();
-         }, 15000);
+
+         }, 10000);
      }
 
      function close(err) {
          setTimeout(function() {
-             evt.emit('end');
-         }, 350000)
+             evt.emit('end', array);
+         }, 30000);
      }
      async.eachSeries(array, loop, close);
 
