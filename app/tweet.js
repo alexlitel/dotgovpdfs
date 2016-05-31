@@ -30,7 +30,9 @@
          }
 
          const req = request.head(item.url.actual);
+         console.log(item.url.actual);
          req.on('error', function(err) {
+        
              console.log('Error accessing document');
              req.abort();
              checkDb(item);
@@ -40,21 +42,22 @@
                  console.log('Document unavailable');
                  req.abort();
                  checkDb(item);
-             }
-             if (res.headers.hasOwnProperty('last-modified')) {
-                 let validDate = cutOffDate(res.headers['last-modified']);
-                 req.abort();
-                 if (validDate) {
-                     console.log('Document within date range');
-                     checkDb(item);
-                 } else {
-                     console.log('Document out of date range');
-                     return false;
-                 }
              } else {
-                 console.log('Document doesn\'t have modified header');
-                 checkDb(item);
-                 req.abort();
+                 if (res.headers.hasOwnProperty('last-modified')) {
+                     let validDate = cutOffDate(res.headers['last-modified']);
+                     req.abort();
+                     if (validDate) {
+                         console.log('Document within date range');
+                         checkDb(item);
+                     } else {
+                         console.log('Document out of date range');
+                         return false;
+                     }
+                 } else {
+                     console.log('Document doesn\'t have modified header');
+                     req.abort();
+                     checkDb(item);
+                 }
              }
          });
 

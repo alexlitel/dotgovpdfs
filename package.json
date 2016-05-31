@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "deploy": "git push heroku master -f && git push github master -f",
     "test": "mocha"
   },
   "engines": {
