@@ -24,15 +24,9 @@
 
 
      function parseFile(item, cb) {
-         function cutOffDate(str) {
-             return new Date(str) > new Date(new Date().setMonth(new Date().getMonth() - 6));
-
-         }
-
          const req = request.head(item.url.actual);
          console.log(item.url.actual);
          req.on('error', function(err) {
-        
              console.log('Error accessing document');
              req.abort();
              checkDb(item);
@@ -44,9 +38,8 @@
                  checkDb(item);
              } else {
                  if (res.headers.hasOwnProperty('last-modified')) {
-                     let validDate = cutOffDate(res.headers['last-modified']);
                      req.abort();
-                     if (validDate) {
+                     if (new Date(res.headers['last-modified']) > new Date(new Date().setMonth(new Date().getMonth() - 6))) {
                          console.log('Document within date range');
                          checkDb(item);
                      } else {
@@ -102,7 +95,6 @@
          setTimeout(function() {
              let num = array.indexOf(item);
              console.log(`item: ${num}`);
-
              parseFile(item);
              cb();
 

@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "async": "^2.0.0-rc.5",
-    "exiftool": "0.0.3",
     "feedparser": "^1.1.4",
     "html-entities": "^1.2.0",
     "mongoose": "^4.4.17",
