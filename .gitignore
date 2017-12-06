@@ -1,4 +1,13 @@
 node_modules
 .env
-app/checktitle.js
-/test
+app/*
+.env
+.DS_Store/
+*.log
+/coverage/
+node_modules/
+/lib/
+/dist/
+.env
+junk/
+*.sublime-workspace

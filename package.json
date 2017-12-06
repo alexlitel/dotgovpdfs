@@ -4,24 +4,52 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "deploy": "git push heroku master -f && git push github master -f",
-    "test": "mocha"
+    "dev:start": "cross-env NODE_ENV=development babel-node src/run.js",
+    "lint": "eslint --fix src --ext .js",
+    "test": "yarn lint && jest --coverage",
+    "build": "rimraf lib dist && babel src -d lib --ignore .test.js,__mocks__",
+    "heroku-postbuild": "yarn build && cross-env NODE_ENV=production",
+    "precommit": "yarn test",
+    "prepush": "yarn test && yarn build",
+    "prod:start": "cross-env NODE_ENV=production node lib/run.js"
   },
   "engines": {
-    "node": "6.11.1"
+    "node": "8.x",
+    "yarn": "1.x"
   },
-  "author": "",
+  "jest": {
+    "testRegex": "src/.+test"
+  },
+  "author": "<alexlitel@gmail.com>",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^3.5.0",
-    "mocha": "^2.4.5"
+    "babel-cli": "^6.24.1",
+    "babel-jest": "^21.0.2",
+    "babel-plugin-syntax-class-properties": "^6.13.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-polyfill": "^6.23.0",
+    "babel-preset-env": "^1.5.2",
+    "cross-env": "^5.0.1",
+    "eslint": "^4.7.2",
+    "eslint-config-airbnb-base": "^12.0.0",
+    "eslint-plugin-import": "^2.3.0",
+    "husky": "^0.14.3",
+    "jest": "^21.1.0",
+    "mockgoose": "^7.3.3",
+    "nock": "^9.0.14",
+    "rimraf": "^2.6.1"
   },
   "dependencies": {
-    "async": "^2.0.0-rc.5",
-    "feedparser": "^1.1.4",
-    "html-entities": "^1.2.0",
-    "mongoose": "^4.4.17",
+    "babel-core": "^6.26.0",
+    "bluebird": "^3.5.1",
+    "dotenv": "^4.0.0",
+    "ent": "^2.2.0",
+    "feedparser": "^2.2.2",
+    "feedparser-promised": "^1.4.2",
+    "mongoose": "^4.12.3",
+    "qs": "^6.5.1",
     "request": "^2.72.0",
-    "twit": "^2.2.4"
+    "request-promise": "^4.2.2"
   }
 }
