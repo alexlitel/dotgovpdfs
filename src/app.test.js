@@ -8,11 +8,12 @@ import Tweet from './model'
 
 
 jest.mock('./model')
-jest.mock('feedparser-promised', () => jest.fn(() => ['one', 'old', 'two', 'three', 'one', 'redirect'].map((link, i) => ({
-  link: `https://www.google.com/url?rct=j&sa=t&url=https://www.testurl.com/${link}&ct=ga`,
-  title: `Document ${i}`,
-}))))
+jest.mock('feedparser-promised')
 
+feedparser.parse = jest.fn(() => ['one', 'old', 'two', 'three', 'one', 'redirect'].map((link, i) => ({
+    link: `https://www.google.com/url?rct=j&sa=t&url=https://www.testurl.com/${link}&ct=ga`,
+    title: `Document ${i}`,
+  })))
 
 const setUpMocks = () => {
   nock(/twitter\.com/)

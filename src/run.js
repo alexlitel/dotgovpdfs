@@ -7,7 +7,7 @@ const main = async () => {
   } catch (e) {
     console.log(`Err with running app: ${e.toString()}`)
   }
-  db.connection.close()
+  db.close()
   process.exit()
 }
 

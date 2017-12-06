@@ -4,7 +4,7 @@ import ItemParser from './parse-item'
 
 const app = async () => {
   try {
-    const items = await feedparser('https://www.google.com/alerts/feeds/05724736813364006377/1110170774429747755')
+    const items = await feedparser.parse('https://www.google.com/alerts/feeds/05724736813364006377/1110170774429747755')
     console.log('Feed received. Application now starting.')
 
     await bluebird.each(items, async (item, i) => {
